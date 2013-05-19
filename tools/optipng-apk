@@ -1,0 +1,54 @@
+#!/bin/bash
+
+echo "Choose Compression (1-7)"
+read compression
+if [[ -d app ]]
+then
+echo "Found app folder"
+cd app
+rm -Rf res
+optiapk=`find *.apk | sed s/.apk//`
+setterm -bold 
+tput setaf 1
+echo "Optimizing APK"
+echo "--------------"
+tput sgr0
+for optimapk in $optiapk
+do
+unzip $optimapk.apk -d $optimapk 1>>/dev/null
+mv $optimapk/res $PWD 
+rm -Rf $optimapk
+../tools/optipng -o$compression res/drawable-*/* 1>/dev/null
+zip -r -q $optimapk.apk res
+rm -Rf res
+echo "$optimapk.apk optimized"
+done
+cd ..
+elif [[ -d framework ]]
+then
+echo "Found framework folder"
+echo "Optimizing .apk files in framework folder"
+cd framework
+rm -Rf res
+optifrlist=`find *.apk | sed s/.apk//`
+setterm -bold 
+tput setaf 1
+echo "Optimizing APK in framework folder"
+echo "----------------------------------"
+tput sgr0
+for optifr in $optifrlist
+do
+unzip $optifr.apk -d $optifr 1>>/dev/null
+mv $optifr/res $PWD 
+rm -Rf $optifr 
+../tools/optipng -o$compression res/drawable-*/* 1>/dev/null
+zip -r -q $optifr.apk res
+rm -Rf res
+echo "$optifr.apk optimized"
+done
+cd ..
+tools/done
+else
+echo "App or Framework folder not found! Exiting..."
+exit 1
+fi

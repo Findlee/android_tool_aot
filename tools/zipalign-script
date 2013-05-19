@@ -1,0 +1,57 @@
+#!/bin/bash
+
+if [[ -d app ]]
+then
+if
+[[ -d tmp/app_zipaligned ]]
+then
+echo "Deleting old app_zipaligned folder"
+rm -Rf tmp/app_zipaligned
+fi
+mkdir -p tmp/app_zipaligned
+cd app
+zipapk=`find *.apk`
+setterm -bold 
+tput setaf 1 
+echo "Zipaligning"
+tput sgr0
+echo "-----------"
+for zipaligning in $zipapk
+do
+../tools/zipalign 4 $zipaligning ../tmp/app_zipaligned/$zipaligning
+echo $zipaligning zipaligned
+done
+cd ..
+rm -R app
+mv tmp/app_zipaligned app
+tools/done
+elif [[ -d framework ]]
+then
+echo "Found framework folder"
+if
+[[ -d tmp/framework_zipaligned ]]
+then
+echo "Deleting old framework_zipaligned folder"
+rm -R tmp/framework_zipaligned
+fi
+mkdir -p tmp/framework_zipaligned
+cd framework
+zipjar=`find *.jar`
+setterm -bold 
+tput setaf 1 
+echo "Zipaligning in framework folder"
+tput sgr0
+echo "-----------"
+for zipaligningjar in $zipjar
+do
+../tools/zipalign 4 $zipaligningjar ../tmp/framework_zipaligned/$zipaligningjar
+echo "$zipaligningjar" zipaligned
+done
+cd ..
+rm -R framework
+mv tmp/framework_zipaligned framework
+tools/done
+else
+echo "App or Framework folder not found! Exiting..."
+exit 1
+fi

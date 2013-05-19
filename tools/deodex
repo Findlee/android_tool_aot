@@ -1,0 +1,108 @@
+#!/bin/bash
+
+# Deodex app
+if [[ ! -d app ]] && [[ ! -d framework ]]
+then
+echo "App folder or framework folder not found! Exiting..."
+exit 1
+fi
+echo "Enter number API (Only number)"
+setterm -bold 
+tput setaf 1
+echo "Android 2.1 Eclair (API level 7)
+Android 2.2–2.2.3 Froyo (API level 8) 
+Android 2.3–2.3.2 Gingerbread (API level 9)
+Android 2.3.3–2.3.7 Gingerbread (API level 10)
+Android 3.0 Honeycomb (API level 11)
+Android 3.1 Honeycomb (API level 12)
+Android 3.2 Honeycomb (API level 13)
+Android 4.0–4.0.2 Ice Cream Sandwich (API level 14)
+Android 4.0.3–4.0.4 Ice Cream Sandwich (API level 15)
+Android 4.1 Jelly Bean (API level 16)
+Android 4.2 Jelly Bean (API level 17)"
+tput sgr0
+read -p "API: " api
+if [[ "$api" == "" ]]
+then
+echo "You not wirited API , Default 10"
+api=`10`
+fi
+odex=`find app | grep -c ".odex"`
+apk=`find app | grep -c ".apk"`
+setterm -bold 
+tput setaf 1 
+echo "Found $odex Odex Files and $apk APK Files"
+tput sgr0
+if
+[[ "$odex" == "0" ]]
+then
+echo ".odex files not found! Exiting from folder..."
+fi
+if
+[[ "$apk" == "0" ]]
+then
+echo ".apk not found! Exiting..."
+exit 0
+fi
+cp tools/baksmali.jar tools/smali.jar app
+cd app
+odexlist=`find *.odex | sed s/.odex//`
+setterm -bold 
+tput setaf 1 
+echo "Deodexing"
+tput sgr0
+echo "---------"
+for odexfile in $odexlist
+do
+java -Xmx512m -jar baksmali.jar -a $api -d ../framework -x $odexfile.odex -o $odexfile
+java -Xmx512m -jar smali.jar -a $api $odexfile -o classes.dex
+zip -r -q $odexfile.apk classes.dex
+rm -R $odexfile $odexfile.odex classes.dex
+echo "$odexfile Deodexed"
+done
+rm baksmali.jar smali.jar
+cd ..
+odexnew=`find app | grep -c ".odex"`
+apknew=`find app | grep -c ".apk"`
+echo "Found $odexnew Odex Files and $apknew APK Files"
+
+# Deodex framework
+
+odexfr=`find framework | grep -c ".odex"`
+jar=`find framework | grep -c ".jar"`
+setterm -bold 
+tput setaf 1 
+echo "Found $odex Odex Files and $jar JAR Files"
+tput sgr0
+if
+[[ "$odexfr" == "0" ]]
+then
+echo ".odex files not found! Exiting..."
+exit 0
+fi
+if
+[[ "jar" == "0" ]]
+then
+echo ".apk files not found! Exiting..."
+exit 0
+fi
+cp tools/baksmali.jar tools/smali.jar framework
+cd framework
+odexfrlist=`find *.odex | sed s/.odex//`
+setterm -bold 
+tput setaf 1 
+echo "Deodexing in framework folder"
+echo ""
+tput sgr0
+echo "---------"
+for odexfrfile in $odexfrlist
+do
+java -Xmx512m -jar baksmali.jar -a $api -d ../framework -x $odexfrfile.odex -o $odexfrfile
+java -Xmx512m -jar smali.jar -a $api $odexfrfile -o classes.dex
+zip -r -q $odexfrfile.jar classes.dex
+rm -R $odexfrfile $odexfrfile.odex classes.dex
+echo "$odexfrfile Deodexed"
+done
+rm baksmali.jar smali.jar
+cd ..
+tools/done
