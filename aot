@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# APK Optimizer Tool v.1.0
+# APK Optimizer Tool v.1.1
 # Author - Findlee
 # E-Mail - thefindlee@gmail.com
 # Profile on 4pda.ru - http://4pda.ru/forum/index.php?showuser=1498763
@@ -14,13 +14,13 @@ setterm -bold
 tput setaf 1 
 clear
 echo "============================================================="
-echo "APK Optimizer Tool by Findlee v.1.0"
+echo "APK Optimizer Tool by Findlee v.1.1"
 echo "============================================================="
 tput sgr0
 
 echo "
 1)Deodex app and framework
-2)Zipalign app folder
+2)Zipalign apk files
 3)Optimize png images in apk files
 4)CleanUp
 5)Exit

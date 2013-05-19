@@ -1,8 +1,0 @@
-#!/bin/bash
-
-setterm -bold 
-tput setaf 1 
-echo "All Done"
-echo "Press any key"
-tput sgr0
-read
