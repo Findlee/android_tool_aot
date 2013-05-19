@@ -10,7 +10,7 @@ read
 }
 
 function not_found {
-if [[ ! -d app ]] || [[ ! -d framework ]]
+if [[ ! -d app ]] && [[ ! -d framework ]]
 then
 setterm -bold 
 tput setaf 1 

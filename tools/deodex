@@ -3,7 +3,7 @@
 source tools/fn
 
 # Deodex app
-if [[ ! -d app ]] && [[ ! -d framework ]]
+if [[ ! -d app ]] || [[ ! -d framework ]]
 then
 setterm -bold 
 tput setaf 1 
@@ -26,7 +26,6 @@ apk=`find app | grep -c ".apk"`
 setterm -bold 
 tput setaf 1 
 echo "Found $odex Odex Files and $apk APK Files"
-tput sgr0
 if
 [[ "$odex" == "0" ]]
 then
@@ -35,17 +34,14 @@ fi
 if
 [[ "$apk" == "0" ]]
 then
-echo ".apk not found! Exiting..."
-exit 0
+echo ".apk not found! Exiting from folder..."
 fi
 cp tools/baksmali.jar tools/smali.jar app
 cd app
 odexlist=`find *.odex | sed s/.odex//`
-setterm -bold 
-tput setaf 1 
 echo "Deodexing"
-tput sgr0
 echo "---------"
+tput sgr0
 for odexfile in ${odexlist[@]}
 do
 java -Xmx512m -jar baksmali.jar -a $api -d ../framework -x $odexfile.odex -o $odexfile
@@ -68,7 +64,6 @@ setterm -bold
 tput setaf 1
 echo "---------"
 echo "Found $odex Odex Files and $jar JAR Files in framework folder"
-tput sgr0
 if
 [[ "$odexfr" == "0" ]]
 then
@@ -84,11 +79,9 @@ fi
 cp tools/baksmali.jar tools/smali.jar framework
 cd framework
 odexfrlist=`find *.odex | sed s/.odex//`
-setterm -bold 
-tput setaf 1 
 echo "Deodexing in framework folder"
-tput sgr0
 echo "---------"
+tput sgr0
 for odexfrfile in $odexfrlist
 do
 java -Xmx512m -jar baksmali.jar -a $api -d ../framework -x $odexfrfile.odex -o $odexfrfile
