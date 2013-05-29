@@ -12,18 +12,34 @@ rm -Rf res
 optiapk=`find *.apk | sed s/.apk//`
 setterm -bold 
 tput setaf 1
-echo "Optimizing APK"
+echo "Optimizing APK files in app folder"
 echo "--------------"
 tput sgr0
 for optimapk in ${optiapk[@]}
 do
 unzip $optimapk.apk -d $optimapk 1>>/dev/null
-mv $optimapk/res $PWD 
-rm -Rf $optimapk
-../tools/optipng -o$compression res/drawable-*/* 1>/dev/null
-zip -r -q $optimapk.apk res
-rm -Rf res
-echo "$optimapk.apk optimized"
+if [[ -d $optimapk/res ]]
+then
+cd $optimapk/res
+found_png=`find . | grep .png | wc -l`
+cd ../..
+	if [[ "$found_png" != "0" ]]
+	then
+	mv $optimapk/res $PWD
+	rm -Rf $optimapk
+	../tools/optipng -o$compression res/drawable/* 1>/dev/null
+	../tools/optipng -o$compression res/drawable-*/* 1>/dev/null
+	zip -r -q $optimapk.apk res
+	rm -R res
+	echo "$optimapk.apk optimized"
+	else
+	echo "No png images in $optimapk.apk for compression"
+	rm -R $optimapk
+	fi
+else
+echo "No png images in $optimapk.apk for compression"
+rm -R $optimapk
+fi
 done
 cd ..
 all_done
@@ -37,18 +53,34 @@ rm -Rf res
 optifrlist=`find *.apk | sed s/.apk//`
 setterm -bold 
 tput setaf 1
-echo "Optimizing APK in framework folder"
+echo "Optimizing APK files in framework folder"
 echo "----------------------------------"
 tput sgr0
 for optifr in ${optifrlist[@]}
 do
 unzip $optifr.apk -d $optifr 1>>/dev/null
-mv $optifr/res $PWD 
-rm -Rf $optifr 
-../tools/optipng -o$compression res/drawable-*/* 1>/dev/null
-zip -r -q $optifr.apk res
-rm -Rf res
-echo "$optifr.apk optimized"
+if [[ -d $optifr/res ]]
+then
+cd $optifr/res
+found_png=`find . | grep .png | wc -l`
+cd ../..
+	if [[ "$found_png" != "0" ]]
+	then
+	mv $optifr/res $PWD
+	rm -Rf $optifr
+	../tools/optipng -o$compression res/drawable/* 1>/dev/null
+	../tools/optipng -o$compression res/drawable-*/* 1>/dev/null
+	zip -r -q $optifr.apk res
+	rm -R res
+	echo "$optifr.apk optimized"
+	else
+	echo "No png images in $optifr.apk for compression"
+	rm -R $optifr
+	fi
+else
+echo "No png images in $optifr.apk for compression"
+rm -R $optifr
+fi
 done
 cd ..
 all_done

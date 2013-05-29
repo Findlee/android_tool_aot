@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# APK Optimizer Tool v.1.1
+# APK Optimizer Tool v.1.3
 # Author - Findlee
 # E-Mail - thefindlee@gmail.com
 # Profile on 4pda.ru - http://4pda.ru/forum/index.php?showuser=1498763
@@ -14,7 +14,7 @@ setterm -bold
 tput setaf 1 
 clear
 echo "============================================================="
-echo "APK Optimizer Tool by Findlee v.1.1"
+echo "APK Optimizer Tool by Findlee v.1.3"
 echo "============================================================="
 tput sgr0
 
