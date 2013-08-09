@@ -1,10 +1,12 @@
 #!/bin/bash
 
-source tools/fn
-not_found
-if [[ -d app ]]
+# Findlee (c) 2013
+# thefindlee@gmail.com
+
+app_zipalign () {
+apk=`find app | grep -c ".apk"`
+if [[ "$apk" != "0" ]]
 then
-echo "App folder found"
 cd app
 apklist=`find *.apk`
 setterm -bold 
@@ -20,11 +22,17 @@ mv $zipaligning-zipaligned $zipaligning
 echo $zipaligning zipaligned
 done
 cd ..
-all_done
+echo "Zipaligning in app folder finished"
+else
+echo "Apk files in app folder not found"
 fi
-if [[ -d framework ]]
+}
+
+framework_zipalign () {
+apkfr=`find framework | grep -c ".apk"`
+jarfr=`find framework | grep -c ".jar"`
+if [[ "$apkfr" != "0" ]] && [[ "$jarfr" != "0" ]]
 then
-echo "Framework folder found"
 cd framework
 apkfrlist=`find *.apk`
 setterm -bold 
@@ -40,5 +48,48 @@ mv $zipaligningfrapk-zipaligned $zipaligningfrapk
 echo "$zipaligningfrapk" zipaligned
 done
 cd ..
-all_done
+echo "Zipaligning in framework folder finished"
+else
+echo "Apk files in framework folder not found"
 fi
+}
+
+while true
+do
+
+setterm -bold 
+tput setaf 1 
+clear
+echo "============================================================="
+echo "APK Zipalign Tool by Findlee v.1.0"
+echo "============================================================="
+tput sgr0
+
+echo "
+1)Zipaling app and framework
+2)Zipaling only app
+3)Zipalign only framework
+4)Main Menu
+"
+
+read -p "Option: " opt
+case $opt in
+
+1)
+app_zipalign
+framework_zipalign
+;;
+
+2)
+app_zipalign
+;;
+
+3)
+framework_zipalign
+;;
+
+4)./aot
+;;
+
+esac
+done

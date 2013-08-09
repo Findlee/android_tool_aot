@@ -1,19 +1,21 @@
 #!/bin/bash
 
-source tools/fn
-not_found
+# Findlee (c) 2013
+# thefindlee@gmail.com
+
+optiapk_app () {
 echo "Choose Compression (1-7)"
 read compression
-if [[ -d app ]]
+apk=`find app | grep -c ".apk"`
+if [[ "$apk" != "0" ]]
 then
-echo "Found app folder"
 cd app
 rm -Rf res
 optiapk=`find *.apk | sed s/.apk//`
 setterm -bold 
 tput setaf 1
 echo "Optimizing APK files in app folder"
-echo "--------------"
+echo "----------------------------------"
 tput sgr0
 for optimapk in ${optiapk[@]}
 do
@@ -41,12 +43,17 @@ echo "No png images in $optimapk.apk for compression"
 rm -R $optimapk
 fi
 done
-cd ..
-all_done
+echo "Optimizing apk files in app folder finished"
+else
+echo "Apk files in app folder not found"
 fi
-if [[ -d framework ]]
+cd ..
+}
+
+optiapk_framework () {
+apkfr=`find framework | grep -c ".apk"`
+if [[ "$apkfr" != "0" ]]
 then
-echo "Found framework folder"
 echo "Optimizing .apk files in framework folder"
 cd framework
 rm -Rf res
@@ -54,7 +61,7 @@ optifrlist=`find *.apk | sed s/.apk//`
 setterm -bold 
 tput setaf 1
 echo "Optimizing APK files in framework folder"
-echo "----------------------------------"
+echo "----------------------------------------"
 tput sgr0
 for optifr in ${optifrlist[@]}
 do
@@ -82,6 +89,46 @@ echo "No png images in $optifr.apk for compression"
 rm -R $optifr
 fi
 done
-cd ..
-all_done
+echo "Optimizing apk files in framework folder finished"
+else
+echo "Apk files in framework folder not found"
 fi
+}
+
+while true
+do
+
+setterm -bold 
+tput setaf 1 
+clear
+echo "============================================================="
+echo "OptiAPK Tool by Findlee v.1.0"
+echo "============================================================="
+tput sgr0
+
+echo "
+1)OptiAPK app and framework
+2)OptiAPK only app
+3)OptiAPK only framework
+4)Main menu
+"
+
+read -p "Option: " opt
+case $opt in
+
+1)
+optiapk_app
+optiapk_framework
+;;
+
+2)optiapk_app
+;;
+3)
+optiapk_framework
+;;
+4)./aot
+;;
+
+esac
+done
+
