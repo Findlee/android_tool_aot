@@ -38,7 +38,7 @@ case $opt in
 2)tools/zipalign-script;continue;;
 3)tools/optipng-apk;continue;;
 4)rm -Rf app app_zipaligned framework *. ;;
-5)exit
+5)exit;;
 esac
 fi
 done
